@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         val clientBuilder = OkHttpClient.Builder()
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
 
         Retrofit.Builder()
                 .client(clientBuilder.build())
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TIMEOUT = 40L
+        private const val TIMEOUT = 1230L
         private const val BASE_URL = "http://v2.grability.rappi.com/"
         const val PATH = "api/application-versions/android/check/83/storekeeper_restaurant"
     }
