@@ -83,11 +83,11 @@ class MainActivity : AppCompatActivity() {
             val queue = Volley.newRequestQueue(this)
             val stringRequest = StringRequest(Request.Method.GET, BASE_URL + PATH,
                     Response.Listener<String> { response ->
-                        binding.textVolley.plus("Result OK: $response")
+                        binding.textVolleyOkHtto.plus("Result OK: $response")
                         binding.progress.visibility = View.GONE
                     },
                     Response.ErrorListener {
-                        binding.textVolley.plus("Error: ${it.message}")
+                        binding.textVolleyOkHtto.plus("Error: ${it.message}")
                         binding.progress.visibility = View.GONE
                     })
 
