@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonVolleyOkHttp.setOnClickListener {
-            val queue = Volley.newRequestQueue(this)
+            val queue = Volley.newRequestQueue(this, VolleyOkHttp3StackInterceptors())
             val stringRequest = StringRequest(Request.Method.GET, BASE_URL + PATH,
                     Response.Listener<String> { response ->
                         binding.textVolleyOkHtto.plus("Result OK: $response")
