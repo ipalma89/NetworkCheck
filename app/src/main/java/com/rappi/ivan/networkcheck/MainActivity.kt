@@ -1,8 +1,8 @@
 package com.rappi.ivan.networkcheck
 
 import android.databinding.DataBindingUtil
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import com.android.volley.Request
@@ -20,6 +20,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import java.io.BufferedReader
+import java.io.DataInputStream
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -72,6 +77,38 @@ class MainActivity : AppCompatActivity() {
 
             queue.add(stringRequest)
             binding.progress.visibility = View.VISIBLE
+        }
+
+        binding.buttonVolleyOkHttp.setOnClickListener {
+            val queue = Volley.newRequestQueue(this)
+            val stringRequest = StringRequest(Request.Method.GET, BASE_URL + PATH,
+                    Response.Listener<String> { response ->
+                        binding.textVolley.plus("Result OK: $response")
+                        binding.progress.visibility = View.GONE
+                    },
+                    Response.ErrorListener {
+                        binding.textVolley.plus("Error: ${it.message}")
+                        binding.progress.visibility = View.GONE
+                    })
+
+            queue.add(stringRequest)
+            binding.progress.visibility = View.VISIBLE
+        }
+
+        binding.buttonHttp.setOnClickListener {
+            Thread {
+                try {
+                    val url = URL(BASE_URL + PATH).openConnection() as HttpURLConnection
+                    if (url.responseCode == 200) {
+                        binding.textHttp.plus("Result OK: ${url.inputStream.bufferedReader().readText()}")
+                    } else {
+                        binding.textHttp.plus("Error: ${url.responseCode}")
+                    }
+                    url.disconnect()
+                } catch (exception: Exception) {
+                    binding.textHttp.plus("Error: $exception")
+                }
+            }.start()
         }
     }
 
