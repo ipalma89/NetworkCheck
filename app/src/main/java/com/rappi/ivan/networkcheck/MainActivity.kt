@@ -16,6 +16,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -56,6 +58,33 @@ class MainActivity : AppCompatActivity() {
                     .doFinally { binding.progress.visibility = View.GONE }
                     .subscribe({ binding.textRetrofit.plus("Result OK: $it") },
                             { binding.textRetrofit.plus("Error: ${it.message}\n${it.cause}") })
+        }
+
+        binding.buttonRetrofitCall.setOnClickListener {
+            val clientBuilder = OkHttpClient.Builder()
+                    .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+
+            val retro = Retrofit.Builder()
+                    .client(clientBuilder.build())
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                    .build()
+
+            binding.progress.visibility = View.VISIBLE
+
+            retro.create(RappiApi2::class.java).check().enqueue(object : Callback<Any> {
+                override fun onResponse(call: Call<Any>?, response: retrofit2.Response<Any>) {
+                    binding.textRetrofitCall.plus("Result OK: ${response.body()}")
+                    binding.progress.visibility = View.GONE
+                }
+
+                override fun onFailure(call: Call<Any>?, t: Throwable) {
+                    binding.textRetrofitCall.plus("Error: ${t.message}\n${t.cause}")
+                    binding.progress.visibility = View.GONE
+                }
+            })
         }
 
         binding.buttonVolley.setOnClickListener {
@@ -101,6 +130,11 @@ class MainActivity : AppCompatActivity() {
 interface RappiApi {
     @GET(PATH)
     fun check(): Single<Any>
+}
+
+interface RappiApi2 {
+    @GET(PATH)
+    fun check(): Call<Any>
 }
 
 fun TextView.plus(newText: String) {

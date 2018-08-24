@@ -30,6 +30,18 @@
                     android:text="Retrofit:" />
 
                 <Button
+                    android:id="@+id/button_retrofitCall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Get With RetrofitCall" />
+
+                <TextView
+                    android:id="@+id/text_retrofitCall"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:text="RetrofitCall:" />
+
+                <Button
                     android:id="@+id/button_volley"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
