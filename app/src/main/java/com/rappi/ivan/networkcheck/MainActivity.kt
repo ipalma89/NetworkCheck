@@ -73,6 +73,22 @@ class MainActivity : AppCompatActivity() {
             queue.add(stringRequest)
             binding.progress.visibility = View.VISIBLE
         }
+
+        binding.buttonVolleyOkHttp.setOnClickListener {
+            val queue = Volley.newRequestQueue(this, VolleyOkHttp3StackInterceptors())
+            val stringRequest = StringRequest(Request.Method.GET, BASE_URL + PATH,
+                    Response.Listener<String> { response ->
+                        binding.textVolleyOkHttp.plus("Result OK: $response")
+                        binding.progress.visibility = View.GONE
+                    },
+                    Response.ErrorListener {
+                        binding.textVolleyOkHttp.plus("Error: ${it.message}")
+                        binding.progress.visibility = View.GONE
+                    })
+
+            queue.add(stringRequest)
+            binding.progress.visibility = View.VISIBLE
+        }
     }
 
     companion object {
