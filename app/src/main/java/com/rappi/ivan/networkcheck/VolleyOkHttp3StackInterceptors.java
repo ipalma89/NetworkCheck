@@ -9,14 +9,11 @@ import com.android.volley.toolbox.HttpResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Headers;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -25,14 +22,11 @@ import okhttp3.ResponseBody;
 
 
 public class VolleyOkHttp3StackInterceptors extends BaseHttpStack {
-    private final List<Interceptor> mInterceptors;
 
-    public VolleyOkHttp3StackInterceptors() {
-        this.mInterceptors = Collections.emptyList();
-    }
+    private final OkHttpClient client;
 
-    public VolleyOkHttp3StackInterceptors(List<Interceptor> interceptors) {
-        this.mInterceptors = interceptors;
+    public VolleyOkHttp3StackInterceptors(OkHttpClient client) {
+        this.client = client;
     }
 
     private static void setConnectionParametersForRequest(okhttp3.Request.Builder builder, Request<?> request)
@@ -84,13 +78,6 @@ public class VolleyOkHttp3StackInterceptors extends BaseHttpStack {
 
     @Override
     public HttpResponse executeRequest(Request<?> request, Map<String, String> additionalHeaders) throws IOException, AuthFailureError {
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        int timeoutMs = request.getTimeoutMs();
-
-        clientBuilder.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-        clientBuilder.readTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-        clientBuilder.writeTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-
         okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
         okHttpRequestBuilder.url(request.getUrl());
 
@@ -104,12 +91,6 @@ public class VolleyOkHttp3StackInterceptors extends BaseHttpStack {
 
         setConnectionParametersForRequest(okHttpRequestBuilder, request);
 
-
-        for (Interceptor interceptor : mInterceptors) {
-            clientBuilder.addNetworkInterceptor(interceptor);
-        }
-
-        OkHttpClient client = clientBuilder.build();
         okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();
         Call okHttpCall = client.newCall(okHttpRequest);
         Response okHttpResponse = okHttpCall.execute();

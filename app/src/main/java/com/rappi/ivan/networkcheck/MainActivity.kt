@@ -30,13 +30,17 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
 
-    private val retrofit: Retrofit by lazy {
-        val clientBuilder = OkHttpClient.Builder()
+    private val okHttpClient by lazy {
+        OkHttpClient.Builder()
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .build()
+    }
 
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-                .client(clientBuilder.build())
+                .client(okHttpClient)
                 .baseUrl(BASE_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
@@ -61,13 +65,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonRetrofitCall.setOnClickListener {
-            val clientBuilder = OkHttpClient.Builder()
-                    .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-                    .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-                    .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
-
             val retro = Retrofit.Builder()
-                    .client(clientBuilder.build())
+                    .client(okHttpClient)
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                     .build()
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonVolleyOkHttp.setOnClickListener {
-            val queue = Volley.newRequestQueue(this, VolleyOkHttp3StackInterceptors())
+            val queue = Volley.newRequestQueue(this, VolleyOkHttp3StackInterceptors(okHttpClient))
             val stringRequest = StringRequest(Request.Method.GET, BASE_URL + PATH,
                     Response.Listener<String> { response ->
                         binding.textVolleyOkHttp.plus("Result OK: $response")
@@ -139,5 +138,5 @@ interface RappiApi2 {
 
 fun TextView.plus(newText: String) {
     val old = text.toString()
-    text =  "$old\n$newText"
+    text = "$old\n$newText"
 }
