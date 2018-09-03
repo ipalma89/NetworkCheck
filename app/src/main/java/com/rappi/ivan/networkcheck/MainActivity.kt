@@ -22,6 +22,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -82,6 +83,31 @@ class MainActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<Any>?, t: Throwable) {
                     binding.textRetrofitCall.plus("Error: ${t.message}\n${t.cause}")
                     binding.progress.visibility = View.GONE
+                }
+            })
+        }
+
+        binding.buttonOkHttp.setOnClickListener {
+            val client = OkHttpClient()
+            val request = okhttp3.Request.Builder()
+                    .url(BASE_URL + PATH)
+                    .build()
+
+            binding.progress.visibility = View.VISIBLE
+
+            client.newCall(request).enqueue(object : okhttp3.Callback {
+                override fun onResponse(call: okhttp3.Call?, response: okhttp3.Response?) {
+                    runOnUiThread {
+                        binding.textOkHttp.plus("Result OK: ${response?.body()}")
+                        binding.progress.visibility = View.GONE
+                    }
+                }
+
+                override fun onFailure(call: okhttp3.Call?, e: IOException?) {
+                    runOnUiThread {
+                        binding.textOkHttp.plus("Error: ${e?.message}\n${e?.cause}")
+                        binding.progress.visibility = View.GONE
+                    }
                 }
             })
         }

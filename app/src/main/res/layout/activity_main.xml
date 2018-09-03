@@ -42,6 +42,18 @@
                     android:text="RetrofitCall:" />
 
                 <Button
+                    android:id="@+id/button_okHttp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Get With OkHttp" />
+
+                <TextView
+                    android:id="@+id/text_okHttp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:text="OkHttp:" />
+
+                <Button
                     android:id="@+id/button_volley"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
