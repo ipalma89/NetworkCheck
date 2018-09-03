@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.rappi.ivan.networkcheck"
@@ -32,9 +32,9 @@ android {
 }
 
 ext {
-    supportLibraryVersion = '27.1.0'
-    okhttpVersion = '3.4.1'
-    retrofitVersion = '2.2.0'
+    supportLibraryVersion = '27.1.1'
+    okhttpVersion = '3.11.0'
+    retrofitVersion = '2.4.0'
 }
 
 dependencies {
@@ -43,7 +43,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:support-v4:$supportLibraryVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    kapt 'com.android.databinding:compiler:3.0.1'
+    kapt 'com.android.databinding:compiler:3.1.4'
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
